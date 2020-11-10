@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:peliculas/src/models/actores_model.dart';
 import 'package:peliculas/src/models/pelicula_model.dart';
+
+import 'package:peliculas/src/providers/peliculas_provider.dart';
 
 class PeliculaDetalle extends StatelessWidget {
   @override
@@ -20,6 +24,7 @@ class PeliculaDetalle extends StatelessWidget {
             _descripcion(pelicula),
             _descripcion(pelicula),
             _descripcion(pelicula),
+            _crearCasting(pelicula),
           ]),
         )
       ],
@@ -42,7 +47,6 @@ class PeliculaDetalle extends StatelessWidget {
         background: FadeInImage(
           placeholder: AssetImage('assets/img/loading.gif'),
           image: NetworkImage(pelicula.getBackgroundImg()),
-          fadeInDuration: Duration(microseconds: 150),
           fit: BoxFit.cover,
         ),
       ),
@@ -93,5 +97,57 @@ class PeliculaDetalle extends StatelessWidget {
           pelicula.overview,
           textAlign: TextAlign.justify,
         ));
+  }
+
+  _crearCasting(Pelicula pelicula) {
+    final peliProvider = new PeliculasProvider();
+
+    return FutureBuilder(
+      future: peliProvider.getCast(pelicula.id.toString()),
+      builder: (context, AsyncSnapshot<List> snapshot) {
+        if (snapshot.hasData) {
+          return _crearActoresPageView(snapshot.data);
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  _crearActoresPageView(List<Actor> actores) {
+    return SizedBox(
+      height: 200.0,
+      child: PageView.builder(
+        pageSnapping: false,
+        controller: PageController(
+          viewportFraction: 0.3,
+          initialPage: 1,
+        ),
+        itemCount: actores.length,
+        itemBuilder: (context, i) {
+          return _actorTarjeta(actores[i]);
+        },
+      ),
+    );
+  }
+
+  _actorTarjeta(Actor actor) {
+    return Container(
+        child: Column(
+      children: [
+        ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: FadeInImage(
+              placeholder: AssetImage('assets/img(no-image.jpg'),
+              image: NetworkImage(actor.getFoto()),
+              height: 150.0,
+              fit: BoxFit.cover,
+            )),
+        Text(
+          actor.name,
+          overflow: TextOverflow.ellipsis,
+        )
+      ],
+    ));
   }
 }
