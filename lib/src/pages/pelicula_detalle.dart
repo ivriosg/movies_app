@@ -58,11 +58,14 @@ class PeliculaDetalle extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Image(
-                image: NetworkImage(pelicula.getPosterImg()),
-                height: 150.0,
+            Hero(
+              tag: pelicula.uniqueId,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: Image(
+                  image: NetworkImage(pelicula.getPosterImg()),
+                  height: 150.0,
+                ),
               ),
             ),
             SizedBox(width: 20.0),
@@ -138,7 +141,7 @@ class PeliculaDetalle extends StatelessWidget {
         ClipRRect(
             borderRadius: BorderRadius.circular(20.0),
             child: FadeInImage(
-              placeholder: AssetImage('assets/img(no-image.jpg'),
+              placeholder: AssetImage('assets/img/no-image.jpg'),
               image: NetworkImage(actor.getFoto()),
               height: 150.0,
               fit: BoxFit.cover,
